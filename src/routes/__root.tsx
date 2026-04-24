@@ -2,7 +2,11 @@ import { Outlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
+import { CartProvider } from "@/lib/cart";
+import { WishlistProvider } from "@/lib/wishlist";
 import { Toaster } from "@/components/ui/sonner";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { VIPModal } from "@/components/VIPModal";
 
 function NotFoundComponent() {
   return (
@@ -71,8 +75,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <AuthProvider>
-      <Outlet />
-      <Toaster />
+      <CartProvider>
+        <WishlistProvider>
+          <Outlet />
+          <VIPModal />
+          <WhatsAppFloat />
+          <Toaster />
+        </WishlistProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

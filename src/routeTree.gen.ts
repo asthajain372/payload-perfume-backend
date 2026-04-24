@@ -9,23 +9,80 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as NewArrivalsRouteImport } from './routes/new-arrivals'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as BestsellersRouteImport } from './routes/bestsellers'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as OrderPerfumeIdRouteImport } from './routes/order.$perfumeId'
+import { Route as AdminVipSignupsRouteImport } from './routes/admin.vip-signups'
 import { Route as AdminPerfumesRouteImport } from './routes/admin.perfumes'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewArrivalsRoute = NewArrivalsRouteImport.update({
+  id: '/new-arrivals',
+  path: '/new-arrivals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BestsellersRoute = BestsellersRouteImport.update({
+  id: '/bestsellers',
+  path: '/bestsellers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -38,10 +95,20 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountRoute,
+} as any)
 const OrderPerfumeIdRoute = OrderPerfumeIdRouteImport.update({
   id: '/order/$perfumeId',
   path: '/order/$perfumeId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminVipSignupsRoute = AdminVipSignupsRouteImport.update({
+  id: '/vip-signups',
+  path: '/vip-signups',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPerfumesRoute = AdminPerfumesRouteImport.update({
   id: '/perfumes',
@@ -53,6 +120,11 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContactsRoute = AdminContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -61,75 +133,168 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/bestsellers': typeof BestsellersRoute
+  '/cart': typeof CartRoute
+  '/collection': typeof CollectionRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/new-arrivals': typeof NewArrivalsRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/perfumes': typeof AdminPerfumesRoute
+  '/admin/vip-signups': typeof AdminVipSignupsRoute
   '/order/$perfumeId': typeof OrderPerfumeIdRoute
+  '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/bestsellers': typeof BestsellersRoute
+  '/cart': typeof CartRoute
+  '/collection': typeof CollectionRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/new-arrivals': typeof NewArrivalsRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/perfumes': typeof AdminPerfumesRoute
+  '/admin/vip-signups': typeof AdminVipSignupsRoute
   '/order/$perfumeId': typeof OrderPerfumeIdRoute
+  '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/bestsellers': typeof BestsellersRoute
+  '/cart': typeof CartRoute
+  '/collection': typeof CollectionRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
+  '/new-arrivals': typeof NewArrivalsRoute
+  '/wishlist': typeof WishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/perfumes': typeof AdminPerfumesRoute
+  '/admin/vip-signups': typeof AdminVipSignupsRoute
   '/order/$perfumeId': typeof OrderPerfumeIdRoute
+  '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/account'
     | '/admin'
+    | '/auth'
+    | '/bestsellers'
+    | '/cart'
+    | '/collection'
+    | '/contact'
     | '/login'
+    | '/new-arrivals'
+    | '/wishlist'
     | '/admin/categories'
+    | '/admin/contacts'
     | '/admin/orders'
     | '/admin/perfumes'
+    | '/admin/vip-signups'
     | '/order/$perfumeId'
+    | '/account/'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/auth'
+    | '/bestsellers'
+    | '/cart'
+    | '/collection'
+    | '/contact'
     | '/login'
+    | '/new-arrivals'
+    | '/wishlist'
     | '/admin/categories'
+    | '/admin/contacts'
     | '/admin/orders'
     | '/admin/perfumes'
+    | '/admin/vip-signups'
     | '/order/$perfumeId'
+    | '/account'
     | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/account'
     | '/admin'
+    | '/auth'
+    | '/bestsellers'
+    | '/cart'
+    | '/collection'
+    | '/contact'
     | '/login'
+    | '/new-arrivals'
+    | '/wishlist'
     | '/admin/categories'
+    | '/admin/contacts'
     | '/admin/orders'
     | '/admin/perfumes'
+    | '/admin/vip-signups'
     | '/order/$perfumeId'
+    | '/account/'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  BestsellersRoute: typeof BestsellersRoute
+  CartRoute: typeof CartRoute
+  CollectionRoute: typeof CollectionRoute
+  ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
+  NewArrivalsRoute: typeof NewArrivalsRoute
+  WishlistRoute: typeof WishlistRoute
   OrderPerfumeIdRoute: typeof OrderPerfumeIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-arrivals': {
+      id: '/new-arrivals'
+      path: '/new-arrivals'
+      fullPath: '/new-arrivals'
+      preLoaderRoute: typeof NewArrivalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -137,11 +302,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bestsellers': {
+      id: '/bestsellers'
+      path: '/bestsellers'
+      fullPath: '/bestsellers'
+      preLoaderRoute: typeof BestsellersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -158,12 +372,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/account/': {
+      id: '/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRoute
+    }
     '/order/$perfumeId': {
       id: '/order/$perfumeId'
       path: '/order/$perfumeId'
       fullPath: '/order/$perfumeId'
       preLoaderRoute: typeof OrderPerfumeIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/vip-signups': {
+      id: '/admin/vip-signups'
+      path: '/vip-signups'
+      fullPath: '/admin/vip-signups'
+      preLoaderRoute: typeof AdminVipSignupsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/perfumes': {
       id: '/admin/perfumes'
@@ -179,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/contacts': {
+      id: '/admin/contacts'
+      path: '/contacts'
+      fullPath: '/admin/contacts'
+      preLoaderRoute: typeof AdminContactsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -189,17 +424,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AccountRouteChildren {
+  AccountIndexRoute: typeof AccountIndexRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountIndexRoute: AccountIndexRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
+
 interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminContactsRoute: typeof AdminContactsRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPerfumesRoute: typeof AdminPerfumesRoute
+  AdminVipSignupsRoute: typeof AdminVipSignupsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminContactsRoute: AdminContactsRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPerfumesRoute: AdminPerfumesRoute,
+  AdminVipSignupsRoute: AdminVipSignupsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -207,8 +457,17 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AccountRoute: AccountRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
+  BestsellersRoute: BestsellersRoute,
+  CartRoute: CartRoute,
+  CollectionRoute: CollectionRoute,
+  ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
+  NewArrivalsRoute: NewArrivalsRoute,
+  WishlistRoute: WishlistRoute,
   OrderPerfumeIdRoute: OrderPerfumeIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -97,38 +97,39 @@ function OrdersPage() {
       <div className="rounded-xl border border-border bg-card overflow-x-auto" style={{ boxShadow: "var(--shadow-soft)" }}>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted/40">
               <TableHead>Customer</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Items</TableHead>
               <TableHead className="text-right">Total</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
               <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                   Loading…
                 </TableCell>
               </TableRow>
             ) : items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
                   No orders yet.
                 </TableCell>
               </TableRow>
             ) : (
               items.map((o) => (
-                <TableRow key={o.id}>
+                <TableRow key={o.id} className="hover:bg-muted/20 transition-colors">
                   <TableCell className="font-medium">{o.customer_name}</TableCell>
                   <TableCell className="text-muted-foreground">{o.phone}</TableCell>
-                  <TableCell className="max-w-xs truncate text-muted-foreground">
+                  <TableCell className="max-w-xs truncate text-muted-foreground text-sm">
                     {itemsSummary(o.items)}
                   </TableCell>
-                  <TableCell className="text-right font-medium">
-                    ${Number(o.total_price).toFixed(2)}
+                  <TableCell className="text-right font-semibold" style={{ color: "var(--accent)" }}>
+                    AED {Number(o.total_price).toFixed(2)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -139,7 +140,7 @@ function OrdersPage() {
                         value={o.status}
                         onValueChange={(v) => updateStatus(o.id, v as OrderStatus)}
                       >
-                        <SelectTrigger className="h-8 w-32">
+                        <SelectTrigger className="h-8 w-32 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -152,8 +153,21 @@ function OrdersPage() {
                       </Select>
                     </div>
                   </TableCell>
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {new Date(o.created_at).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost" onClick={() => remove(o)}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-destructive"
+                      onClick={() => remove(o)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>
