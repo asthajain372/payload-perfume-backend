@@ -1,7 +1,7 @@
 // Bundles the SSR Worker into dist/client/_worker.js for Cloudflare Pages Advanced mode.
 // Cloudflare Pages automatically uses _worker.js as the Worker that handles all requests.
 import { execSync } from 'child_process';
-import { existsSync, statSync } from 'fs';
+import { existsSync, statSync, rmSync } from 'fs';
 
 if (!existsSync('dist/server/index.js')) {
   console.error('dist/server/index.js not found — run vite build first');
@@ -26,4 +26,12 @@ console.log(`✓ dist/client/_worker.js ready (${kb} kB)`);
 
 if (size > 1_000_000) {
   console.warn(`⚠ Worker is ${kb} kB — Cloudflare free plan allows 1 MB. Consider upgrading if deployment fails.`);
+}
+
+// The @cloudflare/vite-plugin creates .wrangler/deploy/config.json which redirects
+// Cloudflare Pages away from wrangler.toml (which has nodejs_compat + pages_build_output_dir).
+// Deleting the redirect lets Pages read wrangler.toml directly.
+if (existsSync('.wrangler/deploy/config.json')) {
+  rmSync('.wrangler', { recursive: true, force: true });
+  console.log('✓ Removed .wrangler redirect — Pages will now use wrangler.toml');
 }
