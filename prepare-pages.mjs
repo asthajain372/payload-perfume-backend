@@ -1,7 +1,7 @@
 // Bundles the SSR Worker into dist/client/_worker.js for Cloudflare Pages Advanced mode.
 // Cloudflare Pages automatically uses _worker.js as the Worker that handles all requests.
 import { execSync } from 'child_process';
-import { existsSync, statSync, rmSync } from 'fs';
+import { existsSync, statSync, rmSync, writeFileSync } from 'fs';
 
 if (!existsSync('dist/server/index.js')) {
   console.error('dist/server/index.js not found — run vite build first');
@@ -39,3 +39,16 @@ if (existsSync('dist/server/wrangler.json')) {
   rmSync('dist/server/wrangler.json');
   console.log('✓ Removed dist/server/wrangler.json');
 }
+
+// In Pages Advanced Mode, _worker.js handles ALL requests including static assets.
+// _routes.json tells Pages to serve /assets/* files directly from the CDN (bypassing the Worker)
+// so that CSS, JS chunks, and other static files are served correctly.
+writeFileSync(
+  'dist/client/_routes.json',
+  JSON.stringify({
+    version: 1,
+    include: ['/*'],
+    exclude: ['/assets/*'],
+  }, null, 2)
+);
+console.log('✓ Wrote dist/client/_routes.json (assets served directly, SSR for everything else)');
