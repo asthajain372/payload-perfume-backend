@@ -13,9 +13,10 @@ const esbuildBin = existsSync('node_modules/.bin/esbuild')
   : 'npx esbuild';
 
 console.log('Bundling SSR Worker for Cloudflare Pages...');
-// node:* and cloudflare:* are provided at runtime by the Workers nodejs_compat layer
+// --platform=node makes esbuild treat all node:* builtins as external (provided at runtime by nodejs_compat).
+// --format=esm keeps output as ES modules as required by Cloudflare Workers.
 execSync(
-  `${esbuildBin} dist/server/index.js --bundle --format=esm --outfile=dist/client/_worker.js --log-level=warning --external:node:* --external:cloudflare:*`,
+  `${esbuildBin} dist/server/index.js --bundle --format=esm --platform=node --outfile=dist/client/_worker.js --log-level=warning`,
   { stdio: 'inherit' }
 );
 
