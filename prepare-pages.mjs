@@ -28,10 +28,14 @@ if (size > 1_000_000) {
   console.warn(`⚠ Worker is ${kb} kB — Cloudflare free plan allows 1 MB. Consider upgrading if deployment fails.`);
 }
 
-// The @cloudflare/vite-plugin creates .wrangler/deploy/config.json which redirects
-// Cloudflare Pages away from wrangler.toml (which has nodejs_compat + pages_build_output_dir).
-// Deleting the redirect lets Pages read wrangler.toml directly.
-if (existsSync('.wrangler/deploy/config.json')) {
+// Remove generated wrangler configs so Cloudflare Pages falls back to reading
+// our root wrangler.toml (which has pages_build_output_dir + nodejs_compat).
+// Without these files, Pages won't be confused by the generated Workers config.
+if (existsSync('.wrangler')) {
   rmSync('.wrangler', { recursive: true, force: true });
-  console.log('✓ Removed .wrangler redirect — Pages will now use wrangler.toml');
+  console.log('✓ Removed .wrangler/');
+}
+if (existsSync('dist/server/wrangler.json')) {
+  rmSync('dist/server/wrangler.json');
+  console.log('✓ Removed dist/server/wrangler.json');
 }
