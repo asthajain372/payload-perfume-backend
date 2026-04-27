@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,6 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
-import { useAuth } from "@/lib/auth";
 import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
@@ -50,9 +49,7 @@ function ProductPage() {
   const { perfumeId } = Route.useParams();
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
-  const { user } = useAuth();
   const { formatPrice, formatTotal } = useCurrency();
-  const navigate = useNavigate();
   const [perfume, setPerfume] = useState<Perfume | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [related, setRelated] = useState<Perfume[]>([]);
@@ -119,40 +116,16 @@ function ProductPage() {
     setTimeout(() => setAdded(false), 2000);
   }
 
-  async function handleBuyNow() {
+  function handleBuyNow() {
     if (!perfume) return;
-
-    if (!user) {
-      toast.info("Please sign in to place an order.");
-      navigate({ to: "/auth", search: { mode: "signin", redirect: `/order/${perfumeId}` } });
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const db: any = supabase;
-    const { error } = await db.from("orders").insert({
-      user_id: user.id,
-      customer_name: user.email ?? "Customer",
-      phone: "via WhatsApp",
-      items: [{ id: perfume.id, name: perfume.name, price: Number(perfume.price), quantity: qty }],
-      total_price: Number(perfume.price) * qty,
-      status: "pending",
-    });
-
-    if (error) {
-      toast.error("Couldn't save your order. Please try again.");
-      return;
-    }
-
     const msg = encodeURIComponent(
-      `Hello! 👋 I'm interested in purchasing *${perfume.name}* from Maison Aria.\n\n` +
+      `Hello! 👋 I'd like to enquire about *${perfume.name}* from Maison Aria.\n\n` +
       `💰 Price: AED ${Number(perfume.price).toFixed(2)}\n` +
       `🔢 Quantity: ${qty}\n` +
-      `💵 Total: AED ${(Number(perfume.price) * qty).toFixed(2)}\n\n` +
-      `Could you please assist me with the order? Thank you!`
+      `💵 Estimated Total: AED ${(Number(perfume.price) * qty).toFixed(2)}\n\n` +
+      `Could you please confirm availability and delivery details? Thank you!`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
-    toast.success("Order saved! Continue on WhatsApp.");
   }
 
   function handleShare() {

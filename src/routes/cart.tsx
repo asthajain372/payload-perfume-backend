@@ -1,10 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
-import { useAuth } from "@/lib/auth";
 import { useCurrency } from "@/lib/currency";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
   Sparkles, ShoppingCart, Trash2, Plus, Minus,
@@ -20,48 +18,22 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { items, count, total, removeItem, updateQty, clear } = useCart();
-  const { user } = useAuth();
   const { formatTotal } = useCurrency();
-  const navigate = useNavigate();
 
-  async function handleWhatsAppCheckout() {
+  function handleWhatsAppEnquiry() {
     if (items.length === 0) return;
-
-    if (!user) {
-      toast.info("Please sign in to place an order.");
-      navigate({ to: "/auth", search: { mode: "signin", redirect: "/cart" } });
-      return;
-    }
-
     const shipping = total >= 150 ? 0 : 15;
     const finalTotal = total + shipping;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const db: any = supabase;
-    const { error } = await db.from("orders").insert({
-      user_id: user.id,
-      customer_name: user.email ?? "Customer",
-      phone: "via WhatsApp",
-      items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
-      total_price: finalTotal,
-      status: "pending",
-    });
-
-    if (error) {
-      toast.error("Couldn't save your order. Please try again.");
-      return;
-    }
-
     const lines = items
       .map((i) => `• ${i.name} ×${i.quantity} — AED ${(i.price * i.quantity).toFixed(2)}`)
       .join("\n");
     const msg = encodeURIComponent(
-      `Hello! 👋 I'd like to place an order from *Maison Aria*:\n\n${lines}\n\n` +
-      `💵 *Total: AED ${finalTotal.toFixed(2)}*\n\nCould you please help me complete this order? Thank you!`
+      `Hello! 👋 I'd like to enquire about the following from *Maison Aria*:\n\n${lines}\n\n` +
+      `💰 *Estimated Total: AED ${finalTotal.toFixed(2)}*\n\nCould you please confirm availability and delivery details? Thank you!`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
     clear();
-    toast.success("Order saved! Continue the conversation on WhatsApp.");
+    toast.success("WhatsApp opening — continue the conversation there!");
   }
 
   return (
@@ -184,7 +156,7 @@ function CartPage() {
                     <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-display text-base font-semibold text-primary-foreground leading-tight">Order Summary</p>
+                    <p className="font-display text-base font-semibold text-primary-foreground leading-tight">Enquiry Summary</p>
                     <p className="text-[10px] uppercase tracking-widest text-primary-foreground/50">Maison Aria</p>
                   </div>
                   <span className="ml-auto rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-medium text-primary-foreground/80">
@@ -262,7 +234,7 @@ function CartPage() {
                   {/* ── CTA ── */}
                   <Button
                     size="lg"
-                    onClick={handleWhatsAppCheckout}
+                    onClick={handleWhatsAppEnquiry}
                     className="w-full h-12 rounded-xl gap-2.5 text-base font-semibold border-0 text-white"
                     style={{ background: "linear-gradient(135deg, #25D366 0%, #20ba59 100%)", boxShadow: "0 4px 16px rgba(37,211,102,0.35)" }}
                   >
