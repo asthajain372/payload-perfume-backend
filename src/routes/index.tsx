@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import {
   Sparkles, ArrowRight, ShoppingCart, Heart,
   Leaf, Flame, Wind, Star, ChevronDown, Quote,
@@ -52,6 +53,7 @@ const PILLARS = [
 function HomePage() {
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
+  const { formatPrice } = useCurrency();
   const [featured, setFeatured] = useState<Perfume[]>([]);
   const [bestsellers, setBestsellers] = useState<Perfume[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -172,7 +174,7 @@ function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <p className="font-display text-xl font-semibold text-white">{p.name}</p>
-                    <p className="mt-1 text-sm" style={{ color: "oklch(0.85 0.12 85)" }}>AED {Number(p.price).toFixed(2)}</p>
+                    <p className="mt-1 text-sm" style={{ color: "oklch(0.85 0.12 85)" }}>{formatPrice(Number(p.price))}</p>
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="rounded-full bg-white/90 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm flex items-center gap-2">
@@ -254,7 +256,7 @@ function HomePage() {
                       <p className="mt-1 text-[10px] font-medium text-rose-500">Only {p.stock} left</p>
                     )}
                     <div className="mt-auto pt-3 flex items-center justify-between">
-                      <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</span>
+                      <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</span>
                       <Button size="sm" disabled={p.stock === 0} className="gap-1.5 rounded-full px-3 h-8"
                         onClick={() => { addItem({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url }); toast.success(`${p.name} added to cart`); }}>
                         <ShoppingCart className="h-3.5 w-3.5" /> Add
@@ -320,7 +322,7 @@ function HomePage() {
                   </div>
                   <div className="p-4">
                     <h3 className="font-display text-base font-semibold">{p.name}</h3>
-                    <p className="mt-1 font-display text-lg" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</p>
+                    <p className="mt-1 font-display text-lg" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</p>
                   </div>
                 </Link>
               ))}

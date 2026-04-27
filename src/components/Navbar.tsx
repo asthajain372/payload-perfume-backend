@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useAuth } from "@/lib/auth";
-import { useCurrency } from "@/lib/currency";
 import { PromoBar } from "@/components/PromoBar";
 import { Sparkles, ShoppingCart, Heart, Menu, X, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,7 +20,6 @@ export function Navbar() {
   const { count: cartCount } = useCart();
   const { count: wishCount } = useWishlist();
   const { user } = useAuth();
-  const { currency, setCurrency } = useCurrency();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const initials = user?.email?.[0].toUpperCase() ?? "";
@@ -65,16 +63,7 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          {/* Currency toggle */}
-          <button
-            onClick={() => setCurrency(currency === "AED" ? "INR" : "AED")}
-            className="hidden md:flex items-center gap-1 rounded-full border border-border bg-card hover:bg-muted transition-colors px-3 h-9 text-xs font-semibold text-muted-foreground hover:text-foreground"
-            title="Switch currency"
-          >
-            {currency === "AED" ? "🇦🇪 AED" : "🇮🇳 ₹ INR"}
-          </button>
-
-          <Link
+<Link
             to="/collection"
             className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
             aria-label="Search"
