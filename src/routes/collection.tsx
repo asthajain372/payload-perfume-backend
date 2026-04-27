@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
-import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List } from "lucide-react";
+import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List, ChevronDown, Check } from "lucide-react";
 import { toast } from "sonner";
 
 const searchSchema = z.object({
@@ -144,36 +144,29 @@ function CollectionPage() {
             </div>
           </div>
 
-          {/* Row 2: Category pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-16 shrink-0">Category</span>
-            <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border bg-card p-1">
-              {["all", ...categories.map((c) => c.id)].map((id) => {
-                const label = id === "all" ? "All" : categories.find((c) => c.id === id)?.name ?? id;
-                return (
-                  <button key={id} onClick={() => setActiveCategory(id)}
-                    className={`rounded-lg px-3 py-1.5 text-xs uppercase tracking-wider transition-colors ${activeCategory === id ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Row 2: Category + Brand searchable dropdowns */}
+          <div className="flex flex-wrap items-center gap-3">
+            <FilterCombobox
+              placeholder="All Categories"
+              options={[
+                { value: "all", label: "All Categories" },
+                ...categories.map((c) => ({ value: c.id, label: c.name })),
+              ]}
+              value={activeCategory}
+              onChange={setActiveCategory}
+            />
+            {!loading && brands.length > 0 && (
+              <FilterCombobox
+                placeholder="All Brands"
+                options={[
+                  { value: "all", label: "All Brands" },
+                  ...brands.map((b) => ({ value: b, label: b })),
+                ]}
+                value={activeBrand}
+                onChange={setActiveBrand}
+              />
+            )}
           </div>
-
-          {/* Row 3: Brand pills — only shown once brands exist */}
-          {!loading && brands.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-16 shrink-0">Brand</span>
-              <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border bg-card p-1">
-                {["all", ...brands].map((b) => (
-                  <button key={b} onClick={() => setActiveBrand(b)}
-                    className={`rounded-lg px-3 py-1.5 text-xs uppercase tracking-wider transition-colors ${activeBrand === b ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
-                    {b === "all" ? "All" : b}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Grid */}
@@ -283,6 +276,98 @@ function ProductRow({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { per
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ── Searchable filter dropdown ──
+function FilterCombobox({
+  placeholder,
+  options,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        setSearch("");
+      }
+    }
+    if (open) document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  const filtered = options.filter((o) =>
+    o.label.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const selected = options.find((o) => o.value === value);
+  const isDefault = value === "all";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => { setOpen((v) => !v); setSearch(""); }}
+        className={`inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm transition-colors
+          ${isDefault
+            ? "border-border bg-card text-muted-foreground hover:text-foreground"
+            : "border-primary bg-primary text-primary-foreground"}`}
+      >
+        <span className="max-w-[140px] truncate">{isDefault ? placeholder : selected?.label}</span>
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-[calc(100%+6px)] z-50 w-56 rounded-xl border border-border bg-card shadow-xl">
+          {/* Search input */}
+          <div className="p-2 border-b border-border">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                autoFocus
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search…"
+                className="w-full rounded-lg bg-muted/60 py-1.5 pl-8 pr-3 text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </div>
+          </div>
+
+          {/* Options list */}
+          <div className="max-h-52 overflow-y-auto p-1">
+            {filtered.length === 0 ? (
+              <p className="py-6 text-center text-xs text-muted-foreground">No results</p>
+            ) : (
+              filtered.map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => { onChange(o.value); setOpen(false); setSearch(""); }}
+                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors text-left
+                    ${o.value === value
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-foreground hover:bg-muted"}`}
+                >
+                  <Check className={`h-3.5 w-3.5 shrink-0 ${o.value === value ? "opacity-100" : "opacity-0"}`} />
+                  {o.label}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
