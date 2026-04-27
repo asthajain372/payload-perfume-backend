@@ -25,11 +25,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as OrderPerfumeIdRouteImport } from './routes/order.$perfumeId'
 import { Route as AdminVipSignupsRouteImport } from './routes/admin.vip-signups'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPerfumesRouteImport } from './routes/admin.perfumes'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
@@ -111,6 +111,11 @@ const AdminVipSignupsRoute = AdminVipSignupsRouteImport.update({
   path: '/vip-signups',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPerfumesRoute = AdminPerfumesRouteImport.update({
   id: '/perfumes',
   path: '/perfumes',
@@ -129,11 +134,6 @@ const AdminContactsRoute = AdminContactsRouteImport.update({
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -405,6 +405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVipSignupsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/perfumes': {
       id: '/admin/perfumes'
       path: '/perfumes'
@@ -431,13 +438,6 @@ declare module '@tanstack/react-router' {
       path: '/categories'
       fullPath: '/admin/categories'
       preLoaderRoute: typeof AdminCategoriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
   }

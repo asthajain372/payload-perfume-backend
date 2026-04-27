@@ -16,7 +16,7 @@ console.log('Bundling SSR Worker for Cloudflare Pages...');
 // --platform=node makes esbuild treat all node:* builtins as external (provided at runtime by nodejs_compat).
 // --format=esm keeps output as ES modules as required by Cloudflare Workers.
 execSync(
-  `${esbuildBin} dist/server/index.js --bundle --format=esm --platform=node --outfile=dist/client/_worker.js --log-level=warning`,
+  `${esbuildBin} dist/server/index.js --bundle --format=esm --platform=node --minify --outfile=dist/client/_worker.js --log-level=warning`,
   { stdio: 'inherit' }
 );
 

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
-import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List, ChevronDown, Check } from "lucide-react";
+import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List, ChevronDown, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
 const searchSchema = z.object({
@@ -43,8 +43,8 @@ function CollectionPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [perfumes, setPerfumes] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState<string>(initCat ?? "all");
-  const [activeBrand, setActiveBrand] = useState<string>(initBrand ?? "all");
+  const [activeCategories, setActiveCategories] = useState<string[]>(initCat ? [initCat] : []);
+  const [activeBrands, setActiveBrands] = useState<string[]>(initBrand ? [initBrand] : []);
   const [query, setQuery] = useState(initQ ?? "");
   const [sort, setSort] = useState<SortKey>("newest");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -67,7 +67,6 @@ function CollectionPage() {
 
   const maxPrice = useMemo(() => Math.max(...perfumes.map((p) => Number(p.price)), 500), [perfumes]);
 
-  // Unique brands that have at least one perfume
   const brands = useMemo(
     () => [...new Set(perfumes.map((p) => p.brand).filter(Boolean) as string[])].sort(),
     [perfumes],
@@ -75,8 +74,8 @@ function CollectionPage() {
 
   const filtered = useMemo(() => {
     let list = perfumes.filter((p) => {
-      const matchCat = activeCategory === "all" || p.category_id === activeCategory;
-      const matchBrand = activeBrand === "all" || p.brand === activeBrand;
+      const matchCat = activeCategories.length === 0 || activeCategories.includes(p.category_id ?? "");
+      const matchBrand = activeBrands.length === 0 || activeBrands.includes(p.brand ?? "");
       const q = query.trim().toLowerCase();
       const matchQ = !q || p.name.toLowerCase().includes(q) || (p.description?.toLowerCase().includes(q) ?? false);
       const matchPrice = Number(p.price) <= priceMax;
@@ -86,9 +85,12 @@ function CollectionPage() {
     if (sort === "price_desc") list = [...list].sort((a, b) => Number(b.price) - Number(a.price));
     if (sort === "name_asc") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [perfumes, activeCategory, activeBrand, query, sort, priceMax]);
+  }, [perfumes, activeCategories, activeBrands, query, sort, priceMax]);
 
   const isNew = (created_at: string) => Date.now() - new Date(created_at).getTime() < 30 * 86400000;
+
+  const hasFilters = activeCategories.length > 0 || activeBrands.length > 0 || query.trim() !== "" || priceMax < maxPrice;
+  const clearAll = () => { setActiveCategories([]); setActiveBrands([]); setQuery(""); setPriceMax(maxPrice); };
 
   return (
     <div className="min-h-screen bg-background">
@@ -106,70 +108,113 @@ function CollectionPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
-        {/* Filter bar */}
-        <div className="mb-6 space-y-3">
-          {/* Row 1: search + sort + view toggle */}
-          <div className="flex flex-wrap gap-2 items-center justify-between">
-            <div className="relative">
+        {/* Sticky filter bar */}
+        <div className="sticky top-0 z-20 -mx-6 mb-8 px-6 pt-3 pb-0 bg-background/95 backdrop-blur-md border-b border-border">
+          {/* Single row: search | filters | sort + view */}
+          <div className="flex items-center gap-2 pb-3 flex-wrap">
+            {/* Search */}
+            <div className="relative shrink-0">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search fragrances…" className="pl-9 h-10 w-56" />
+              <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="pl-9 h-9 w-40" />
             </div>
-            <div className="flex items-center gap-2">
-              {/* Price slider */}
-              {!loading && maxPrice > 0 && (
-                <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 h-10">
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">Up to</span>
-                  <input
-                    type="range" min={0} max={maxPrice} step={10} value={priceMax}
-                    onChange={(e) => setPriceMax(Number(e.target.value))}
-                    className="w-24 accent-primary"
-                  />
-                  <span className="text-xs font-medium w-20 text-right" style={{ color: "var(--accent)" }}>
-                    {priceMax >= maxPrice ? "Any" : `AED ${priceMax}`}
-                  </span>
-                </div>
-              )}
-              <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
-                className="h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
-                {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-              </select>
-              <div className="flex rounded-lg border border-border bg-card overflow-hidden">
-                <button onClick={() => setView("grid")} className={`p-2.5 transition-colors ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
-                  <LayoutGrid className="h-4 w-4" />
-                </button>
-                <button onClick={() => setView("list")} className={`p-2.5 transition-colors ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
-                  <List className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
 
-          {/* Row 2: Category + Brand searchable dropdowns */}
-          <div className="flex flex-wrap items-center gap-3">
+            {/* Vertical divider */}
+            <div className="h-6 w-px bg-border shrink-0" />
+
+            {/* Filter icon + dropdowns */}
+            <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <FilterCombobox
-              placeholder="All Categories"
-              options={[
-                { value: "all", label: "All Categories" },
-                ...categories.map((c) => ({ value: c.id, label: c.name })),
-              ]}
-              value={activeCategory}
-              onChange={setActiveCategory}
+              placeholder="Category"
+              options={categories.map((c) => ({ value: c.id, label: c.name }))}
+              value={activeCategories}
+              onChange={setActiveCategories}
             />
             {!loading && brands.length > 0 && (
               <FilterCombobox
-                placeholder="All Brands"
-                options={[
-                  { value: "all", label: "All Brands" },
-                  ...brands.map((b) => ({ value: b, label: b })),
-                ]}
-                value={activeBrand}
-                onChange={setActiveBrand}
+                placeholder="Brand"
+                options={brands.map((b) => ({ value: b, label: b }))}
+                value={activeBrands}
+                onChange={setActiveBrands}
               />
             )}
+
+            {/* Clear all */}
+            {hasFilters && (
+              <button
+                onClick={clearAll}
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-border px-3 text-sm text-muted-foreground transition-colors hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive shrink-0"
+              >
+                <X className="h-3.5 w-3.5" />
+                Clear
+              </button>
+            )}
+
+            {/* Push right */}
+            <div className="flex-1 min-w-0" />
+
+            {/* Price slider */}
+            {!loading && maxPrice > 0 && (
+              <div className="hidden lg:flex items-center gap-2 rounded-xl border border-border bg-card px-3 h-9 shrink-0">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">Price</span>
+                <input
+                  type="range" min={0} max={maxPrice} step={10} value={priceMax}
+                  onChange={(e) => setPriceMax(Number(e.target.value))}
+                  className="w-20 accent-primary"
+                />
+                <span className="text-xs font-medium w-14 text-right" style={{ color: "var(--accent)" }}>
+                  {priceMax >= maxPrice ? "Any" : `AED ${priceMax}`}
+                </span>
+              </div>
+            )}
+
+            {/* Sort */}
+            <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
+              className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground shrink-0">
+              {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+
+            {/* View toggle */}
+            <div className="flex rounded-xl border border-border bg-card overflow-hidden shrink-0">
+              <button onClick={() => setView("grid")} className={`p-2 transition-colors ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button onClick={() => setView("list")} className={`p-2 transition-colors ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
+                <List className="h-4 w-4" />
+              </button>
+            </div>
           </div>
+
+          {/* Active filter tags */}
+          {(activeCategories.length > 0 || activeBrands.length > 0) && (
+            <div className="flex flex-wrap gap-2 pb-3">
+              {activeCategories.map((catId) => {
+                const cat = categories.find((c) => c.id === catId);
+                return cat ? (
+                  <button
+                    key={catId}
+                    onClick={() => setActiveCategories((prev) => prev.filter((x) => x !== catId))}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+                  >
+                    {cat.name}
+                    <X className="h-3 w-3" />
+                  </button>
+                ) : null;
+              })}
+              {activeBrands.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setActiveBrands((prev) => prev.filter((x) => x !== brand))}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+                >
+                  {brand}
+                  <X className="h-3 w-3" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Grid */}
+        {/* Grid / List */}
         {loading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -181,7 +226,7 @@ function CollectionPage() {
             <SlidersHorizontal className="mx-auto mb-4 h-8 w-8 text-muted-foreground/30" />
             <p className="font-display text-2xl">No fragrances match</p>
             <p className="mt-2 text-sm text-muted-foreground">Try changing your filters or search term.</p>
-            <Button className="mt-6 rounded-full px-6" variant="outline" onClick={() => { setActiveCategory("all"); setActiveBrand("all"); setQuery(""); setPriceMax(maxPrice); }}>
+            <Button className="mt-6 rounded-full px-6" variant="outline" onClick={clearAll}>
               Clear filters
             </Button>
           </div>
@@ -280,7 +325,7 @@ function ProductRow({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { per
   );
 }
 
-// ── Searchable filter dropdown ──
+// ── Multi-select searchable filter dropdown ──
 function FilterCombobox({
   placeholder,
   options,
@@ -289,14 +334,13 @@ function FilterCombobox({
 }: {
   placeholder: string;
   options: { value: string; label: string }[];
-  value: string;
-  onChange: (v: string) => void;
+  value: string[];
+  onChange: (v: string[]) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -308,31 +352,48 @@ function FilterCombobox({
     return () => document.removeEventListener("mousedown", handle);
   }, [open]);
 
-  const filtered = options.filter((o) =>
+  const filteredOpts = options.filter((o) =>
     o.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const selected = options.find((o) => o.value === value);
-  const isDefault = value === "all";
+  const toggle = (v: string) => {
+    if (value.includes(v)) {
+      onChange(value.filter((x) => x !== v));
+    } else {
+      onChange([...value, v]);
+    }
+  };
+
+  const isActive = value.length > 0;
+  const label = isActive
+    ? value.length === 1
+      ? (options.find((o) => o.value === value[0])?.label ?? placeholder)
+      : `${value.length} selected`
+    : placeholder;
 
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => { setOpen((v) => !v); setSearch(""); }}
-        className={`inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm transition-colors
-          ${isDefault
-            ? "border-border bg-card text-muted-foreground hover:text-foreground"
-            : "border-primary bg-primary text-primary-foreground"}`}
+        className={`inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-medium transition-all
+          ${isActive
+            ? "border-primary bg-primary text-primary-foreground shadow-sm"
+            : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"}`}
       >
-        <span className="max-w-[140px] truncate">{isDefault ? placeholder : selected?.label}</span>
+        <span className="max-w-[140px] truncate">{label}</span>
+        {isActive && value.length > 1 && (
+          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary-foreground/25 text-[10px] font-bold">
+            {value.length}
+          </span>
+        )}
         <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+6px)] z-50 w-56 rounded-xl border border-border bg-card shadow-xl">
+        <div className="absolute left-0 top-[calc(100%+6px)] z-50 w-60 rounded-2xl border border-border bg-card shadow-2xl">
           {/* Search input */}
-          <div className="p-2 border-b border-border">
+          <div className="p-2.5 border-b border-border">
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <input
@@ -340,32 +401,48 @@ function FilterCombobox({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search…"
-                className="w-full rounded-lg bg-muted/60 py-1.5 pl-8 pr-3 text-sm outline-none placeholder:text-muted-foreground"
+                className="w-full rounded-xl bg-muted/60 py-1.5 pl-8 pr-3 text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
           </div>
 
           {/* Options list */}
-          <div className="max-h-52 overflow-y-auto p-1">
-            {filtered.length === 0 ? (
+          <div className="max-h-52 overflow-y-auto p-1.5">
+            {filteredOpts.length === 0 ? (
               <p className="py-6 text-center text-xs text-muted-foreground">No results</p>
             ) : (
-              filtered.map((o) => (
-                <button
-                  key={o.value}
-                  type="button"
-                  onClick={() => { onChange(o.value); setOpen(false); setSearch(""); }}
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors text-left
-                    ${o.value === value
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-foreground hover:bg-muted"}`}
-                >
-                  <Check className={`h-3.5 w-3.5 shrink-0 ${o.value === value ? "opacity-100" : "opacity-0"}`} />
-                  {o.label}
-                </button>
-              ))
+              filteredOpts.map((o) => {
+                const isSelected = value.includes(o.value);
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => toggle(o.value)}
+                    className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors text-left
+                      ${isSelected ? "bg-primary/10 text-primary font-medium" : "text-foreground hover:bg-muted"}`}
+                  >
+                    <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${isSelected ? "border-primary bg-primary" : "border-border"}`}>
+                      {isSelected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
+                    </span>
+                    {o.label}
+                  </button>
+                );
+              })
             )}
           </div>
+
+          {/* Footer: clear this filter */}
+          {value.length > 0 && (
+            <div className="border-t border-border p-2">
+              <button
+                type="button"
+                onClick={() => { onChange([]); }}
+                className="w-full rounded-xl py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                Clear selection
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
