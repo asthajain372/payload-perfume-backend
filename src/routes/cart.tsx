@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
+import { useCurrency } from "@/lib/currency";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const { items, count, total, removeItem, updateQty, clear } = useCart();
   const { user } = useAuth();
+  const { formatTotal } = useCurrency();
   const navigate = useNavigate();
 
   async function handleWhatsAppCheckout() {
@@ -157,7 +159,7 @@ function CartPage() {
                       </div>
 
                       <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>
-                        AED {(item.price * item.quantity).toFixed(2)}
+                        {formatTotal(item.price * item.quantity, item.quantity)}
                       </span>
                     </div>
                   </div>
@@ -204,7 +206,7 @@ function CartPage() {
                           <p className="text-sm font-medium leading-tight truncate">{item.name}</p>
                           <p className="text-xs text-muted-foreground">Qty {item.quantity}</p>
                         </div>
-                        <span className="shrink-0 text-sm font-semibold">AED {(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="shrink-0 text-sm font-semibold">{formatTotal(item.price * item.quantity, item.quantity)}</span>
                       </div>
                     ))}
                   </div>
@@ -236,7 +238,7 @@ function CartPage() {
                   <div className="space-y-2.5 text-sm border-t border-border pt-4">
                     <div className="flex justify-between text-muted-foreground">
                       <span>Subtotal</span>
-                      <span className="font-medium text-foreground">AED {total.toFixed(2)}</span>
+                      <span className="font-medium text-foreground">{formatTotal(total, count)}</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
                       <span>Shipping</span>
@@ -253,7 +255,7 @@ function CartPage() {
                   >
                     <span className="font-display text-base font-semibold">Total</span>
                     <span className="font-display text-2xl font-semibold" style={{ color: "var(--accent)" }}>
-                      AED {(total >= 150 ? total : total + 15).toFixed(2)}
+                      {formatTotal(total >= 150 ? total : total + 15, count)}
                     </span>
                   </div>
 

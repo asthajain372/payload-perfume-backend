@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import { Sparkles, Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,6 +20,7 @@ type Perfume = { id: string; name: string; description: string | null; price: nu
 function WishlistPage() {
   const { ids, toggle } = useWishlist();
   const { addItem } = useCart();
+  const { formatPrice } = useCurrency();
   const [perfumes, setPerfumes] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -94,7 +96,7 @@ function WishlistPage() {
                   </Link>
                   {p.description && <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{p.description}</p>}
                   <div className="mt-auto pt-4 flex items-center justify-between">
-                    <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</span>
+                    <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</span>
                     <Button size="sm" disabled={p.stock === 0} className="gap-1.5 rounded-full px-4"
                       onClick={() => { addItem({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url }); toast.success(`${p.name} added to cart`); }}>
                       <ShoppingCart className="h-3.5 w-3.5" /> Add to Cart

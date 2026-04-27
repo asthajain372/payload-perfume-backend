@@ -26,28 +26,44 @@ const IP_COUNTRY_KEY = "maison-aria-ip-country";
 const IP_TS_KEY = "maison-aria-ip-ts";
 const IP_TTL = 86_400_000; // 24 hours
 
+function readSettingsCache(): { rate: number; courier: number } | null {
+  try {
+    const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+    const ts = Number(localStorage.getItem(`${SETTINGS_CACHE_KEY}-ts`) ?? "0");
+    if (cached && Date.now() - ts < SETTINGS_TTL) return JSON.parse(cached);
+  } catch {}
+  return null;
+}
+
+function initCurrency(): CurrencyCode {
+  if (typeof window === "undefined") return "AED";
+  const saved = localStorage.getItem(CURRENCY_KEY);
+  if (saved === "INR" || saved === "AED") return saved as CurrencyCode;
+  const cached = localStorage.getItem(IP_COUNTRY_KEY);
+  return cached === "IN" ? "INR" : "AED";
+}
+
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrencyState] = useState<CurrencyCode>("AED");
-  const [rate, setRate] = useState(23);
-  const [courier, setCourier] = useState(250);
-  const [loading, setLoading] = useState(true);
+  // Lazy initialisers read localStorage synchronously on first client render
+  const [currency, setCurrencyState] = useState<CurrencyCode>(initCurrency);
+  const [rate, setRate] = useState<number>(() => readSettingsCache()?.rate ?? 23);
+  const [courier, setCourier] = useState<number>(() => readSettingsCache()?.courier ?? 250);
+  const [loading, setLoading] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return readSettingsCache() === null;
+  });
 
   useEffect(() => {
-    // Restore manually-chosen currency first
+    // IP detection only needed when no cache exists
     const saved = localStorage.getItem(CURRENCY_KEY);
-    if (saved === "INR" || saved === "AED") {
-      setCurrencyState(saved as CurrencyCode);
-    } else {
-      // Auto-detect from IP (cached 24h)
+    if (!saved) {
       const cachedCountry = localStorage.getItem(IP_COUNTRY_KEY);
       const cachedTs = Number(localStorage.getItem(IP_TS_KEY) ?? "0");
       const fresh = Date.now() - cachedTs < IP_TTL;
 
-      if (fresh && cachedCountry) {
-        if (cachedCountry === "IN") setCurrencyState("INR");
-      } else {
-        // api.country.is is free & unlimited; ipapi.co as fallback (1k/day)
-        const detectCountry = () =>
+      if (!fresh || !cachedCountry) {
+        // api.country.is — free, unlimited; ipapi.co as fallback
+        const detect = () =>
           fetch("https://api.country.is/")
             .then((r) => r.json())
             .then((d: { country?: string }) => d?.country ?? "")
@@ -55,10 +71,10 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
               fetch("https://ipapi.co/json/")
                 .then((r) => r.json())
                 .then((d: { country_code?: string }) => d?.country_code ?? "")
-                .catch(() => "")
+                .catch(() => ""),
             );
 
-        detectCountry().then((code) => {
+        detect().then((code) => {
           if (!code) return;
           localStorage.setItem(IP_COUNTRY_KEY, code);
           localStorage.setItem(IP_TS_KEY, String(Date.now()));
@@ -67,16 +83,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Load INR settings (cached 1h, then re-fetch from Supabase)
-    const cachedSettings = localStorage.getItem(SETTINGS_CACHE_KEY);
-    const settingsTs = Number(localStorage.getItem(`${SETTINGS_CACHE_KEY}-ts`) ?? "0");
-
-    if (cachedSettings && Date.now() - settingsTs < SETTINGS_TTL) {
-      const s = JSON.parse(cachedSettings) as { rate: number; courier: number };
-      setRate(s.rate);
-      setCourier(s.courier);
-      setLoading(false);
-    } else {
+    // Refresh settings from Supabase when cache is stale
+    if (loading) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (supabase as any)
         .from("settings")
@@ -101,7 +109,6 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CURRENCY_KEY, c);
   }
 
-  /** Format a single-item price. For INR: bakes in the per-bottle courier charge. */
   function formatPrice(aedPrice: number): string {
     if (currency === "INR") {
       const inr = Math.ceil(aedPrice * rate) + courier;
@@ -110,7 +117,6 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     return `AED ${Number(aedPrice).toFixed(2)}`;
   }
 
-  /** Format a cart/order total. itemCount is total bottles so courier is applied per bottle. */
   function formatTotal(aedTotal: number, itemCount: number): string {
     if (currency === "INR") {
       const inr = Math.ceil(aedTotal * rate) + courier * itemCount;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import { Sparkles, ShoppingCart, Heart, TrendingUp, Award, Flame } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,6 +27,7 @@ type Category = { id: string; name: string };
 function BestsellersPage() {
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
+  const { formatPrice } = useCurrency();
   const [perfumes, setPerfumes] = useState<Perfume[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,7 +126,7 @@ function BestsellersPage() {
                           </Link>
                           {categoryName(p.category_id) && <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{categoryName(p.category_id)}</p>}
                           <div className="mt-3 flex items-center justify-between">
-                            <span className="font-display text-2xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</span>
+                            <span className="font-display text-2xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</span>
                             <Button size="sm" onClick={() => { addItem({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url }); toast.success(`${p.name} added`); }} disabled={p.stock === 0} className="rounded-full gap-1.5 px-4">
                               <ShoppingCart className="h-3.5 w-3.5" /> Add
                             </Button>
@@ -159,7 +161,7 @@ function BestsellersPage() {
                           <h3 className="font-display text-base font-semibold hover:underline underline-offset-2">{p.name}</h3>
                         </Link>
                         <div className="mt-3 flex items-center justify-between">
-                          <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</span>
+                          <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</span>
                           <Button size="sm" variant="ghost" onClick={() => { addItem({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url }); toast.success(`${p.name} added`); }} disabled={p.stock === 0} className="gap-1 px-3 h-8 rounded-full">
                             <ShoppingCart className="h-3.5 w-3.5" />
                           </Button>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { useCurrency } from "@/lib/currency";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Package, LogOut, ShoppingBag, MessageCircle } from "lucide-react";
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/account/")({
 
 function AccountPage() {
   const { user, signOut } = useAuth();
+  const { formatTotal } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -161,7 +163,7 @@ function AccountPage() {
                       className="font-display text-xl font-semibold"
                       style={{ color: "var(--accent)" }}
                     >
-                      AED {Number(order.total_price).toFixed(2)}
+                      {formatTotal(Number(order.total_price), 1)}
                     </span>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {(order.items ?? []).reduce((s, i) => s + i.quantity, 0)} item(s)

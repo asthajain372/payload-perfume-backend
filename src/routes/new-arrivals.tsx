@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import { Sparkles, ShoppingCart, Heart, Star } from "lucide-react";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ type Category = { id: string; name: string };
 function NewArrivalsPage() {
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
+  const { formatPrice } = useCurrency();
   const [perfumes, setPerfumes] = useState<Perfume[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ function NewArrivalsPage() {
                     <p className="mt-4 text-muted-foreground leading-relaxed">{sorted[0].description}</p>
                   )}
                   <div className="mt-6 flex items-center gap-4">
-                    <span className="font-display text-3xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(sorted[0].price).toFixed(2)}</span>
+                    <span className="font-display text-3xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(sorted[0].price))}</span>
                     <Button asChild className="rounded-full px-6 gap-2" style={{ background: "var(--gradient-luxe)" }}>
                       <Link to="/order/$perfumeId" params={{ perfumeId: sorted[0].id }}>
                         <ShoppingCart className="h-4 w-4" /> Shop Now
@@ -132,7 +134,7 @@ function NewArrivalsPage() {
                       </Link>
                       {p.description && <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{p.description}</p>}
                       <div className="mt-auto pt-4 flex items-center justify-between">
-                        <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(p.price).toFixed(2)}</span>
+                        <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(p.price))}</span>
                         <Button size="sm" onClick={() => { addItem({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url }); toast.success(`${p.name} added`); }} disabled={p.stock === 0} className="gap-1.5 rounded-full px-4">
                           <ShoppingCart className="h-3.5 w-3.5" /> Add
                         </Button>
