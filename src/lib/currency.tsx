@@ -46,15 +46,24 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       if (fresh && cachedCountry) {
         if (cachedCountry === "IN") setCurrencyState("INR");
       } else {
-        fetch("https://ipapi.co/json/")
-          .then((r) => r.json())
-          .then((data: { country_code?: string }) => {
-            const code = data?.country_code ?? "";
-            localStorage.setItem(IP_COUNTRY_KEY, code);
-            localStorage.setItem(IP_TS_KEY, String(Date.now()));
-            if (code === "IN") setCurrencyState("INR");
-          })
-          .catch(() => {});
+        // api.country.is is free & unlimited; ipapi.co as fallback (1k/day)
+        const detectCountry = () =>
+          fetch("https://api.country.is/")
+            .then((r) => r.json())
+            .then((d: { country?: string }) => d?.country ?? "")
+            .catch(() =>
+              fetch("https://ipapi.co/json/")
+                .then((r) => r.json())
+                .then((d: { country_code?: string }) => d?.country_code ?? "")
+                .catch(() => "")
+            );
+
+        detectCountry().then((code) => {
+          if (!code) return;
+          localStorage.setItem(IP_COUNTRY_KEY, code);
+          localStorage.setItem(IP_TS_KEY, String(Date.now()));
+          if (code === "IN") setCurrencyState("INR");
+        });
       }
     }
 

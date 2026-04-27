@@ -163,6 +163,11 @@ function PerfumesPage() {
 
   async function remove(p: Perfume) {
     if (!confirm(`Delete "${p.name}"?`)) return;
+    // Delete image from storage first (extract path after "/perfume-images/")
+    if (p.image_url) {
+      const storagePath = p.image_url.split("/perfume-images/")[1];
+      if (storagePath) await supabase.storage.from("perfume-images").remove([storagePath]);
+    }
     const { error } = await supabase.from("perfumes").delete().eq("id", p.id);
     if (error) toast.error(error.message);
     else { toast.success("Deleted"); load(); }
