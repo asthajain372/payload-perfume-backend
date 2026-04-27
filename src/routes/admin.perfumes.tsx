@@ -21,7 +21,7 @@ export const Route = createFileRoute("/admin/perfumes")({ component: PerfumesPag
 
 interface Category { id: string; name: string }
 interface Perfume {
-  id: string; name: string; price: number;
+  id: string; name: string; brand: string | null; price: number;
   description: string | null; image_url: string | null;
   stock: number; category_id: string | null;
   is_featured: boolean; is_new_arrival: boolean; is_bestseller: boolean;
@@ -29,6 +29,7 @@ interface Perfume {
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(120),
+  brand: z.string().trim().max(80).optional().or(z.literal("")),
   price: z.number().positive("Price must be greater than 0"),
   stock: z.number().int().min(0),
   description: z.string().trim().max(2000).optional().or(z.literal("")),
@@ -67,6 +68,7 @@ function PerfumesPage() {
   const [isFeatured, setIsFeatured] = useState(false);
   const [isNewArrival, setIsNewArrival] = useState(false);
   const [isBestseller, setIsBestseller] = useState(false);
+  const [brand, setBrand] = useState("");
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -89,13 +91,13 @@ function PerfumesPage() {
   useEffect(() => { load(); }, []);
 
   function reset() {
-    setEditing(null); setName(""); setPrice(""); setStock("0");
+    setEditing(null); setName(""); setBrand(""); setPrice(""); setStock("0");
     setDescription(""); setCategoryId("none"); setImageUrl("");
     setIsFeatured(false); setIsNewArrival(false); setIsBestseller(false);
   }
   function openNew() { reset(); setOpen(true); }
   function openEdit(p: Perfume) {
-    setEditing(p); setName(p.name); setPrice(String(p.price));
+    setEditing(p); setName(p.name); setBrand(p.brand ?? ""); setPrice(String(p.price));
     setStock(String(p.stock)); setDescription(p.description ?? "");
     setCategoryId(p.category_id ?? "none"); setImageUrl(p.image_url ?? "");
     setIsFeatured(p.is_featured ?? false);
@@ -134,7 +136,7 @@ function PerfumesPage() {
   async function save(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const parsed = schema.safeParse({
-      name, price: Number(price), stock: Number(stock), description,
+      name, brand, price: Number(price), stock: Number(stock), description,
       category_id: categoryId === "none" ? null : categoryId,
       image_url: imageUrl || null,
     });
@@ -142,6 +144,7 @@ function PerfumesPage() {
     setSubmitting(true);
     const payload = {
       ...parsed.data,
+      brand: parsed.data.brand || null,
       description: parsed.data.description || null,
       image_url: parsed.data.image_url || null,
       is_featured: isFeatured,
@@ -224,6 +227,11 @@ function PerfumesPage() {
               <div className="space-y-2">
                 <Label htmlFor="pname">Name *</Label>
                 <Input id="pname" value={name} onChange={(e) => setName(e.target.value)} required maxLength={120} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="pbrand">Brand</Label>
+                <Input id="pbrand" value={brand} onChange={(e) => setBrand(e.target.value)} maxLength={80} placeholder="e.g. Tom Ford, Chanel…" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -314,6 +322,7 @@ function PerfumesPage() {
                   </span>
                 </div>
                 <p className="mt-1.5 text-xs uppercase tracking-wider text-muted-foreground">
+                  {p.brand && <span className="text-foreground/70">{p.brand} · </span>}
                   {catName(p.category_id)} · Stock {p.stock}
                 </p>
                 {p.description && <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{p.description}</p>}

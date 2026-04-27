@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Phone,
   Mail,
+  Settings2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ const NAV = [
   { to: "/admin/orders",      label: "Orders",     icon: ShoppingBag,     exact: false },
   { to: "/admin/vip-signups", label: "VIP List",   icon: Phone,           exact: false },
   { to: "/admin/contacts",    label: "Messages",   icon: Mail,            exact: false },
+  { to: "/admin/settings",    label: "Settings",   icon: Settings2,       exact: false },
 ] as const;
 
 function AdminLayout() {

@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
+import { CurrencyProvider } from "@/lib/currency";
 import { Toaster } from "@/components/ui/sonner";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { VIPModal } from "@/components/VIPModal";
@@ -74,15 +75,17 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <Outlet />
-          <VIPModal />
-          <WhatsAppFloat />
-          <Toaster />
-        </WishlistProvider>
-      </CartProvider>
-    </AuthProvider>
+    <CurrencyProvider>
+      <AuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <Outlet />
+            <VIPModal />
+            <WhatsAppFloat />
+            <Toaster />
+          </WishlistProvider>
+        </CartProvider>
+      </AuthProvider>
+    </CurrencyProvider>
   );
 }

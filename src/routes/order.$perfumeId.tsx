@@ -13,12 +13,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useAuth } from "@/lib/auth";
+import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "971569270365";
 
 type Perfume = {
-  id: string; name: string; description: string | null;
+  id: string; name: string; brand: string | null; description: string | null;
   price: number; stock: number; image_url: string | null;
   category_id: string | null;
 };
@@ -50,6 +51,7 @@ function ProductPage() {
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
   const { user } = useAuth();
+  const { formatPrice, formatTotal } = useCurrency();
   const navigate = useNavigate();
   const [perfume, setPerfume] = useState<Perfume | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
@@ -69,7 +71,7 @@ function ProductPage() {
     (async () => {
       const { data } = await supabase
         .from("perfumes")
-        .select("id, name, description, price, stock, image_url, category_id")
+        .select("id, name, brand, description, price, stock, image_url, category_id")
         .eq("id", perfumeId)
         .maybeSingle();
 
@@ -197,7 +199,6 @@ function ProductPage() {
   }
 
   const inStock = perfume.stock > 0;
-  const total = (Number(perfume.price) * qty).toFixed(2);
   const notes = NOTES_MAP[category?.name ?? ""] ?? DEFAULT_NOTES;
   const wishlisted = has(perfume.id);
 
@@ -252,7 +253,7 @@ function ProductPage() {
 
           {/* ── INFO ── */}
           <div className="flex flex-col py-2">
-            {/* category + stars */}
+            {/* category + brand + stars */}
             <div className="flex items-center gap-3 mb-3 flex-wrap">
               {category && (
                 <Link to="/collection" search={{ category: category.id }}>
@@ -260,6 +261,11 @@ function ProductPage() {
                     {category.name}
                   </span>
                 </Link>
+              )}
+              {perfume.brand && (
+                <span className="rounded-full border border-border bg-card px-3 py-1 text-xs uppercase tracking-widest text-muted-foreground">
+                  {perfume.brand}
+                </span>
               )}
               <div className="flex items-center gap-0.5">
                 {[1,2,3,4,5].map((s) => <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}
@@ -271,7 +277,7 @@ function ProductPage() {
 
             <div className="mt-4 flex items-baseline gap-3">
               <span className="font-display text-4xl font-semibold" style={{ color: "var(--accent)" }}>
-                AED {Number(perfume.price).toFixed(2)}
+                {formatPrice(Number(perfume.price))}
               </span>
               <span className="text-sm text-muted-foreground">per bottle · 50 ml EDP</span>
             </div>
@@ -312,7 +318,7 @@ function ProductPage() {
             {inStock && qty > 1 && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-4 py-2.5">
                 <span className="text-sm text-muted-foreground">Total</span>
-                <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>AED {total}</span>
+                <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>{formatTotal(Number(perfume.price) * qty, qty)}</span>
               </div>
             )}
 
@@ -483,6 +489,7 @@ function RelatedCard({ perfume, wishlisted, onWishlist, onAddCart }: {
   perfume: Perfume; wishlisted: boolean; onWishlist: () => void; onAddCart: () => void;
 }) {
   const inStock = perfume.stock > 0;
+  const { formatPrice } = useCurrency();
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ boxShadow: "var(--shadow-soft)" }}>
       <div className="relative aspect-[3/4] overflow-hidden bg-muted">
@@ -503,7 +510,7 @@ function RelatedCard({ perfume, wishlisted, onWishlist, onAddCart }: {
         </Link>
         {perfume.description && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{perfume.description}</p>}
         <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>AED {Number(perfume.price).toFixed(2)}</span>
+          <span className="font-display text-lg font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(perfume.price))}</span>
           <Button size="sm" onClick={onAddCart} disabled={!inStock} className="gap-1.5 rounded-full px-3 h-8">
             <ShoppingCart className="h-3.5 w-3.5" /> Add
           </Button>

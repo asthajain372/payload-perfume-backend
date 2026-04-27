@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/collection")({
 });
 
 type Category = { id: string; name: string };
-type Perfume = { id: string; name: string; description: string | null; price: number; stock: number; image_url: string | null; category_id: string | null; created_at: string };
+type Perfume = { id: string; name: string; brand: string | null; description: string | null; price: number; stock: number; image_url: string | null; category_id: string | null; created_at: string };
 
 const SORTS = [
   { label: "Newest", value: "newest" },
@@ -48,7 +49,7 @@ function CollectionPage() {
     (async () => {
       const [cats, perfs] = await Promise.all([
         supabase.from("categories").select("id, name").order("name"),
-        supabase.from("perfumes").select("id, name, description, price, stock, image_url, category_id, created_at").order("created_at", { ascending: false }),
+        supabase.from("perfumes").select("id, name, brand, description, price, stock, image_url, category_id, created_at").order("created_at", { ascending: false }),
       ]);
       setCategories(cats.data ?? []);
       const data = (perfs.data ?? []) as Perfume[];
@@ -180,6 +181,7 @@ function CollectionPage() {
 
 function ProductCard({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { perfume: Perfume; isNew: boolean; onAddCart: () => void; onWishlist: () => void; wishlisted: boolean }) {
   const inStock = perfume.stock > 0;
+  const { formatPrice } = useCurrency();
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ boxShadow: "var(--shadow-soft)" }}>
       <div className="relative aspect-[3/4] overflow-hidden bg-muted">
@@ -202,12 +204,13 @@ function ProductCard({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { pe
         <Link to="/order/$perfumeId" params={{ perfumeId: perfume.id }}>
           <h3 className="font-display text-lg font-semibold leading-tight hover:underline underline-offset-2">{perfume.name}</h3>
         </Link>
+        {perfume.brand && <p className="mt-0.5 text-[11px] uppercase tracking-widest text-muted-foreground">{perfume.brand}</p>}
         {perfume.description && <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground leading-relaxed">{perfume.description}</p>}
         {inStock && perfume.stock <= 5 && (
           <p className="mt-1.5 text-[10px] font-semibold text-rose-500 uppercase tracking-wide">Only {perfume.stock} left</p>
         )}
         <div className="mt-auto pt-4 flex items-center justify-between">
-          <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(perfume.price).toFixed(2)}</span>
+          <span className="font-display text-xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(perfume.price))}</span>
           <Button size="sm" onClick={onAddCart} disabled={!inStock} className="gap-1.5 rounded-full px-4">
             <ShoppingCart className="h-3.5 w-3.5" /> Add
           </Button>
@@ -219,6 +222,7 @@ function ProductCard({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { pe
 
 function ProductRow({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { perfume: Perfume; isNew: boolean; onAddCart: () => void; onWishlist: () => void; wishlisted: boolean }) {
   const inStock = perfume.stock > 0;
+  const { formatPrice } = useCurrency();
   return (
     <div className="flex gap-5 rounded-2xl border border-border bg-card p-4 hover:shadow-md transition-shadow" style={{ boxShadow: "var(--shadow-soft)" }}>
       <Link to="/order/$perfumeId" params={{ perfumeId: perfume.id }} className="shrink-0">
@@ -233,6 +237,7 @@ function ProductRow({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { per
             <Link to="/order/$perfumeId" params={{ perfumeId: perfume.id }}>
               <h3 className="font-display text-xl font-semibold hover:underline underline-offset-2">{perfume.name}</h3>
             </Link>
+            {perfume.brand && <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{perfume.brand}</p>}
             {perfume.description && <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{perfume.description}</p>}
           </div>
           <button onClick={onWishlist} className={`shrink-0 ${wishlisted ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"} transition-colors`}>
@@ -240,7 +245,7 @@ function ProductRow({ perfume, isNew, onAddCart, onWishlist, wishlisted }: { per
           </button>
         </div>
         <div className="flex items-center justify-between mt-3">
-          <span className="font-display text-2xl font-semibold" style={{ color: "var(--accent)" }}>AED {Number(perfume.price).toFixed(2)}</span>
+          <span className="font-display text-2xl font-semibold" style={{ color: "var(--accent)" }}>{formatPrice(Number(perfume.price))}</span>
           <Button size="sm" onClick={onAddCart} disabled={!inStock} className="gap-2 rounded-full px-5">
             <ShoppingCart className="h-4 w-4" /> {inStock ? "Add to Cart" : "Sold Out"}
           </Button>

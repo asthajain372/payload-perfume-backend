@@ -73,33 +73,45 @@ export type Database = {
       }
       perfumes: {
         Row: {
+          brand: string | null
           category_id: string | null
           created_at: string
           description: string | null
           id: string
           image_url: string | null
+          is_bestseller: boolean
+          is_featured: boolean
+          is_new_arrival: boolean
           name: string
           price: number
           stock: number
           updated_at: string
         }
         Insert: {
+          brand?: string | null
           category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
+          is_bestseller?: boolean
+          is_featured?: boolean
+          is_new_arrival?: boolean
           name: string
           price: number
           stock?: number
           updated_at?: string
         }
         Update: {
+          brand?: string | null
           category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
+          is_bestseller?: boolean
+          is_featured?: boolean
+          is_new_arrival?: boolean
           name?: string
           price?: number
           stock?: number
@@ -114,6 +126,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
