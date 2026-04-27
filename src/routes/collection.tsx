@@ -13,7 +13,11 @@ import { useCurrency } from "@/lib/currency";
 import { Search, SlidersHorizontal, Heart, ShoppingCart, Sparkles, LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 
-const searchSchema = z.object({ category: z.string().optional(), q: z.string().optional() });
+const searchSchema = z.object({
+  category: z.string().optional(),
+  brand: z.string().optional(),
+  q: z.string().optional(),
+});
 
 export const Route = createFileRoute("/collection")({
   head: () => ({ meta: [{ title: "Collection — Maison Aria" }] }),
@@ -33,13 +37,14 @@ const SORTS = [
 type SortKey = typeof SORTS[number]["value"];
 
 function CollectionPage() {
-  const { category: initCat, q: initQ } = Route.useSearch();
+  const { category: initCat, brand: initBrand, q: initQ } = Route.useSearch();
   const { addItem } = useCart();
   const { toggle, has } = useWishlist();
   const [categories, setCategories] = useState<Category[]>([]);
   const [perfumes, setPerfumes] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>(initCat ?? "all");
+  const [activeBrand, setActiveBrand] = useState<string>(initBrand ?? "all");
   const [query, setQuery] = useState(initQ ?? "");
   const [sort, setSort] = useState<SortKey>("newest");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -62,19 +67,26 @@ function CollectionPage() {
 
   const maxPrice = useMemo(() => Math.max(...perfumes.map((p) => Number(p.price)), 500), [perfumes]);
 
+  // Unique brands that have at least one perfume
+  const brands = useMemo(
+    () => [...new Set(perfumes.map((p) => p.brand).filter(Boolean) as string[])].sort(),
+    [perfumes],
+  );
+
   const filtered = useMemo(() => {
     let list = perfumes.filter((p) => {
       const matchCat = activeCategory === "all" || p.category_id === activeCategory;
+      const matchBrand = activeBrand === "all" || p.brand === activeBrand;
       const q = query.trim().toLowerCase();
       const matchQ = !q || p.name.toLowerCase().includes(q) || (p.description?.toLowerCase().includes(q) ?? false);
       const matchPrice = Number(p.price) <= priceMax;
-      return matchCat && matchQ && matchPrice;
+      return matchCat && matchBrand && matchQ && matchPrice;
     });
     if (sort === "price_asc") list = [...list].sort((a, b) => Number(a.price) - Number(b.price));
     if (sort === "price_desc") list = [...list].sort((a, b) => Number(b.price) - Number(a.price));
     if (sort === "name_asc") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [perfumes, activeCategory, query, sort]);
+  }, [perfumes, activeCategory, activeBrand, query, sort, priceMax]);
 
   const isNew = (created_at: string) => Date.now() - new Date(created_at).getTime() < 30 * 86400000;
 
@@ -95,13 +107,47 @@ function CollectionPage() {
 
       <div className="mx-auto max-w-7xl px-6 py-8">
         {/* Filter bar */}
-        <div className="mb-6 flex flex-wrap gap-3 items-center justify-between">
-          <div className="flex flex-wrap gap-2 items-center">
+        <div className="mb-6 space-y-3">
+          {/* Row 1: search + sort + view toggle */}
+          <div className="flex flex-wrap gap-2 items-center justify-between">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search fragrances…" className="pl-9 h-10 w-56" />
             </div>
-            <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1">
+            <div className="flex items-center gap-2">
+              {/* Price slider */}
+              {!loading && maxPrice > 0 && (
+                <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 h-10">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Up to</span>
+                  <input
+                    type="range" min={0} max={maxPrice} step={10} value={priceMax}
+                    onChange={(e) => setPriceMax(Number(e.target.value))}
+                    className="w-24 accent-primary"
+                  />
+                  <span className="text-xs font-medium w-20 text-right" style={{ color: "var(--accent)" }}>
+                    {priceMax >= maxPrice ? "Any" : `AED ${priceMax}`}
+                  </span>
+                </div>
+              )}
+              <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
+                className="h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+                {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+              <div className="flex rounded-lg border border-border bg-card overflow-hidden">
+                <button onClick={() => setView("grid")} className={`p-2.5 transition-colors ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
+                  <LayoutGrid className="h-4 w-4" />
+                </button>
+                <button onClick={() => setView("list")} className={`p-2.5 transition-colors ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
+                  <List className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2: Category pills */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-16 shrink-0">Category</span>
+            <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border bg-card p-1">
               {["all", ...categories.map((c) => c.id)].map((id) => {
                 const label = id === "all" ? "All" : categories.find((c) => c.id === id)?.name ?? id;
                 return (
@@ -114,34 +160,20 @@ function CollectionPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Price slider */}
-            {!loading && maxPrice > 0 && (
-              <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 h-10">
-                <span className="text-xs text-muted-foreground whitespace-nowrap">Up to</span>
-                <input
-                  type="range" min={0} max={maxPrice} step={10} value={priceMax}
-                  onChange={(e) => setPriceMax(Number(e.target.value))}
-                  className="w-24 accent-primary"
-                />
-                <span className="text-xs font-medium w-20 text-right" style={{ color: "var(--accent)" }}>
-                  {priceMax >= maxPrice ? "Any" : `AED ${priceMax}`}
-                </span>
+          {/* Row 3: Brand pills — only shown once brands exist */}
+          {!loading && brands.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-16 shrink-0">Brand</span>
+              <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border bg-card p-1">
+                {["all", ...brands].map((b) => (
+                  <button key={b} onClick={() => setActiveBrand(b)}
+                    className={`rounded-lg px-3 py-1.5 text-xs uppercase tracking-wider transition-colors ${activeBrand === b ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
+                    {b === "all" ? "All" : b}
+                  </button>
+                ))}
               </div>
-            )}
-            <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
-              className="h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
-              {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-            <div className="flex rounded-lg border border-border bg-card overflow-hidden">
-              <button onClick={() => setView("grid")} className={`p-2.5 transition-colors ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
-                <LayoutGrid className="h-4 w-4" />
-              </button>
-              <button onClick={() => setView("list")} className={`p-2.5 transition-colors ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
-                <List className="h-4 w-4" />
-              </button>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Grid */}
@@ -156,7 +188,7 @@ function CollectionPage() {
             <SlidersHorizontal className="mx-auto mb-4 h-8 w-8 text-muted-foreground/30" />
             <p className="font-display text-2xl">No fragrances match</p>
             <p className="mt-2 text-sm text-muted-foreground">Try changing your filters or search term.</p>
-            <Button className="mt-6 rounded-full px-6" variant="outline" onClick={() => { setActiveCategory("all"); setQuery(""); setPriceMax(maxPrice); }}>
+            <Button className="mt-6 rounded-full px-6" variant="outline" onClick={() => { setActiveCategory("all"); setActiveBrand("all"); setQuery(""); setPriceMax(maxPrice); }}>
               Clear filters
             </Button>
           </div>
