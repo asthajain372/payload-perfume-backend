@@ -1,7 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 
-const WHATSAPP_NUMBER = "971569270365";
-const DEFAULT_MSG = encodeURIComponent("Hello! I'd like to know more about your fragrances at Maison Aria. 🌹");
+const WHATSAPP_NUMBER = "971555819416";
+const DEFAULT_MSG = encodeURIComponent("Hello! I'd like to know more about your fragrances at JD09 Perfumes. 🌹");
 
 export function WhatsAppFloat() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

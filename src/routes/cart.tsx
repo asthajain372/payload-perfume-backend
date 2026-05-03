@@ -9,10 +9,10 @@ import {
   ArrowLeft, ShoppingBag,
 } from "lucide-react";
 
-const WHATSAPP_NUMBER = "971569270365";
+const WHATSAPP_NUMBER = "971555819416";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Your Cart — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Your Cart — JD09 Perfumes" }] }),
   component: CartPage,
 });
 
@@ -28,7 +28,7 @@ function CartPage() {
       .map((i) => `• ${i.name} ×${i.quantity} — AED ${(i.price * i.quantity).toFixed(2)}`)
       .join("\n");
     const msg = encodeURIComponent(
-      `Hello! 👋 I'd like to enquire about the following from *Maison Aria*:\n\n${lines}\n\n` +
+      `Hello! 👋 I'd like to enquire about the following from *JD09 Perfumes*:\n\n${lines}\n\n` +
       `💰 *Estimated Total: AED ${finalTotal.toFixed(2)}*\n\nCould you please confirm availability and delivery details? Thank you!`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
@@ -45,7 +45,7 @@ function CartPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--gradient-gold)" }}>
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
-            <span className="font-display text-xl font-semibold tracking-tight">Maison Aria</span>
+            <span className="font-display text-xl font-semibold tracking-tight">JD09 Perfumes</span>
           </Link>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <ShoppingCart className="h-4 w-4" />
@@ -157,7 +157,7 @@ function CartPage() {
                   </div>
                   <div>
                     <p className="font-display text-base font-semibold text-primary-foreground leading-tight">Enquiry Summary</p>
-                    <p className="text-[10px] uppercase tracking-widest text-primary-foreground/50">Maison Aria</p>
+                    <p className="text-[10px] uppercase tracking-widest text-primary-foreground/50">JD09 Perfumes</p>
                   </div>
                   <span className="ml-auto rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-medium text-primary-foreground/80">
                     {count} {count === 1 ? "item" : "items"}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Mail, MessageSquare, Send, CheckCircle2, Phone } from "lucide-react";
+import { Mail, MessageSquare, Send, CheckCircle2, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ const schema = z.object({
 });
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({ meta: [{ title: "Contact Us — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Contact Us — JD09 Perfumes" }] }),
   component: ContactPage,
 });
 
@@ -51,10 +51,8 @@ function ContactPage() {
       {/* minimal header */}
       <header className="border-b border-border/50 px-6 py-4">
         <Link to="/" className="inline-flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--gradient-gold)" }}>
-            <Sparkles className="h-4 w-4 text-primary" />
-          </div>
-          <span className="font-display text-xl font-semibold">Maison Aria</span>
+          <img src="/logo.jpeg" alt="JD09 Perfumes" className="h-12 w-12 object-contain" style={{ mixBlendMode: "multiply" }} draggable={false} />
+          <span className="font-display text-xl font-semibold">JD09 Perfumes</span>
         </Link>
       </header>
 
@@ -72,17 +70,19 @@ function ContactPage() {
 
               <div className="mt-8 space-y-4">
                 {[
-                  { icon: Mail, label: "Email", value: "hello@maisonaria.com" },
-                  { icon: Phone, label: "Phone", value: "+971 56 927 0365" },
-                  { icon: MessageSquare, label: "WhatsApp", value: "+971 56 927 0365" },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card">
+                  { icon: Phone, label: "Phone / WhatsApp", value: "+971 55 581 9416" },
+                  { icon: Phone, label: "Phone", value: "+971 54 236 1145" },
+                  { icon: Phone, label: "Phone", value: "+971 50 263 5062" },
+                  { icon: Mail, label: "Email", value: "darshanpujara82@gmail.com" },
+                  { icon: MessageSquare, label: "Address", value: "Shop no -2, Taj Daulat Building, Near Arabian Courtyard Hotel, Opp Dubai Museum, Meena Bazar, Bur Dubai, UAE" },
+                ].map(({ icon: Icon, label, value }, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card mt-0.5">
                       <Icon className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</p>
-                      <p className="text-sm font-medium">{value}</p>
+                      <p className="text-sm font-medium leading-snug">{value}</p>
                     </div>
                   </div>
                 ))}
@@ -92,16 +92,12 @@ function ContactPage() {
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Business Hours</p>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Mon – Fri</span>
-                    <span className="font-medium">9:00 AM – 9:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Saturday</span>
-                    <span className="font-medium">10:00 AM – 7:00 PM</span>
+                    <span className="text-muted-foreground">Mon – Sat</span>
+                    <span className="font-medium">10:00 AM – 10:00 PM</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Sunday</span>
-                    <span className="font-medium">Closed</span>
+                    <span className="font-medium">11:00 AM – 9:00 PM</span>
                   </div>
                 </div>
               </div>

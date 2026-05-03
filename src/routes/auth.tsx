@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
-import { Sparkles, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup"]).optional(),
@@ -15,7 +15,7 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
-  head: () => ({ meta: [{ title: "Sign In — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Sign In — JD09 Perfumes" }] }),
   component: AuthPage,
 });
 
@@ -27,7 +27,7 @@ const credSchema = z.object({
 function AuthPage() {
   const { mode: initMode = "signin", redirect } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">(initMode);
-  const { signIn, signUp, user, loading, isAdmin } = useAuth();
+  const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,7 +50,7 @@ function AuthPage() {
       : await signUp(parsed.data.email, parsed.data.password);
     setSubmitting(false);
     if (error) { toast.error(error); return; }
-    if (mode === "signup") toast.success("Account created! Welcome to Maison Aria.");
+    if (mode === "signup") toast.success("Account created! Welcome to JD09 Perfumes.");
     else toast.success("Welcome back.");
   }
 
@@ -58,11 +58,9 @@ function AuthPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* minimal header */}
       <header className="border-b border-border/50 px-6 py-4">
-        <Link to="/" className="inline-flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--gradient-gold)" }}>
-            <Sparkles className="h-4 w-4 text-primary" />
-          </div>
-          <span className="font-display text-xl font-semibold">Maison Aria</span>
+        <Link to="/" className="inline-flex items-center gap-1">
+          <img src="/logo.jpeg" alt="" className="h-12 w-12 object-contain shrink-0" style={{ mixBlendMode: "multiply" }} draggable={false} />
+          <span className="font-display text-xl font-semibold -ml-1">JD09 Perfumes</span>
         </Link>
       </header>
 
@@ -81,7 +79,7 @@ function AuthPage() {
             </div>
 
             <h1 className="font-display text-2xl font-semibold text-center mb-1">
-              {mode === "signin" ? "Welcome back" : "Join Maison Aria"}
+              {mode === "signin" ? "Welcome back" : "Join JD09 Perfumes"}
             </h1>
             <p className="text-center text-sm text-muted-foreground mb-6">
               {mode === "signin"

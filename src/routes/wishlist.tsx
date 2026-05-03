@@ -11,7 +11,7 @@ import { Sparkles, Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/wishlist")({
-  head: () => ({ meta: [{ title: "Wishlist — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Wishlist — JD09 Perfumes" }] }),
   component: WishlistPage,
 });
 

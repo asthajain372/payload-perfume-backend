@@ -36,10 +36,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Maison Aria — Perfume Admin" },
+      { title: "JD09 Perfumes — Perfume Admin" },
       { name: "description", content: "Admin panel for managing perfumes, categories, and orders." },
-      { name: "author", content: "Maison Aria" },
-      { property: "og:title", content: "Maison Aria — Perfume Admin" },
+      { name: "author", content: "JD09 Perfumes" },
+      { property: "og:title", content: "JD09 Perfumes — Perfume Admin" },
       { property: "og:description", content: "Admin panel for managing perfumes, categories, and orders." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

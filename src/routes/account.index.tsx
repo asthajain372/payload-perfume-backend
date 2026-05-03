@@ -25,7 +25,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export const Route = createFileRoute("/account/")({
-  head: () => ({ meta: [{ title: "My Account — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "My Account — JD09 Perfumes" }] }),
   component: AccountPage,
 });
 
@@ -190,7 +190,7 @@ function AccountPage() {
                     Questions about this order?
                   </p>
                   <a
-                    href={`https://wa.me/971569270365?text=${encodeURIComponent(`Hi! I have a question about my order #${order.id.slice(0, 8).toUpperCase()}`)}`}
+                    href={`https://wa.me/971555819416?text=${encodeURIComponent(`Hi! I have a question about my order #${order.id.slice(0, 8).toUpperCase()}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-[#25D366] hover:underline underline-offset-2"

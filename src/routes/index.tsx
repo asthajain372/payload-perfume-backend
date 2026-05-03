@@ -15,7 +15,7 @@ import {
 const TESTIMONIALS = [
   {
     name: "Sarah M.", location: "Dubai, UAE", initials: "SM",
-    text: "I've tried many luxury perfumes but Maison Aria is something truly different. The longevity is incredible — I get compliments every single day without fail.",
+    text: "I've tried many luxury perfumes but JD09 Perfumes is something truly different. The longevity is incredible — I get compliments every single day without fail.",
   },
   {
     name: "James K.", location: "London, UK", initials: "JK",
@@ -31,8 +31,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Maison Aria — Curated Luxury Perfumes" },
-      { name: "description", content: "Discover Maison Aria's collection of curated luxury fragrances." },
+      { title: "JD09 Perfumes — Curated Luxury Perfumes" },
+      { name: "description", content: "Discover JD09 Perfumes's collection of curated luxury fragrances." },
     ],
   }),
   component: HomePage,
@@ -106,7 +106,7 @@ function HomePage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-5 py-2 text-xs uppercase tracking-widest text-muted-foreground shadow-sm">
             <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--accent)" }} />
-            The Maison Aria Collection · Est. 2024
+            The JD09 Perfumes Collection · Est. 2024
           </div>
           <h1 className="font-display text-6xl font-semibold leading-[1.08] tracking-tight md:text-8xl">
             Fragrances born
@@ -392,7 +392,7 @@ function HomePage() {
           <Sparkles className="mx-auto mb-5 h-8 w-8 text-primary-foreground/70" />
           <h2 className="font-display text-4xl font-semibold text-primary-foreground md:text-5xl">Find your signature scent.</h2>
           <p className="mx-auto mt-4 max-w-md text-primary-foreground/70">
-            Every Maison Aria fragrance tells a story. Browse the full collection and discover the one that feels unmistakably yours.
+            Every JD09 Perfumes fragrance tells a story. Browse the full collection and discover the one that feels unmistakably yours.
           </p>
           <Button asChild size="lg" className="mt-8 h-12 px-10 text-base rounded-full" style={{ background: "var(--gradient-gold)", color: "var(--primary)" }}>
             <Link to="/collection">Shop Now</Link>

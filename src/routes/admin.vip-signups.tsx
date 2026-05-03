@@ -171,7 +171,7 @@ function VIPSignupsPage() {
                   <td className="px-5 py-3.5 text-muted-foreground text-xs">{fmt(s.created_at)}</td>
                   <td className="px-5 py-3.5">
                     <a
-                      href={`https://wa.me/${s.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Hello! Thank you for joining the Maison Aria VIP list. 🌹")}`}
+                      href={`https://wa.me/${s.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Hello! Thank you for joining the JD09 Perfumes VIP list. 🌹")}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-lg border border-[#25D366]/40 px-3 py-1.5 text-xs font-medium text-[#25D366] hover:bg-[#25D366]/10 transition-colors"

@@ -12,7 +12,7 @@ import { Sparkles, ShoppingCart, Heart, TrendingUp, Award, Flame } from "lucide-
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/bestsellers")({
-  head: () => ({ meta: [{ title: "Bestsellers — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Bestsellers — JD09 Perfumes" }] }),
   component: BestsellersPage,
 });
 

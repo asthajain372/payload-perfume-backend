@@ -88,7 +88,7 @@ function AdminLayout() {
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-display text-base font-semibold leading-tight">Maison Aria</p>
+                <p className="font-display text-base font-semibold leading-tight">JD09 Perfumes</p>
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Admin Panel</p>
               </div>
             </Link>
@@ -171,7 +171,7 @@ function AdminLayout() {
             >
               <Sparkles className="h-3.5 w-3.5 text-primary" />
             </div>
-            <span className="font-display text-base font-semibold">Maison Aria</span>
+            <span className="font-display text-base font-semibold">JD09 Perfumes</span>
           </Link>
           <Button onClick={signOut} variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
             <LogOut className="h-4 w-4" />

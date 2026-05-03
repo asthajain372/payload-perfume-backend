@@ -12,7 +12,7 @@ import { Sparkles, ShoppingCart, Heart, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/new-arrivals")({
-  head: () => ({ meta: [{ title: "New Arrivals — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "New Arrivals — JD09 Perfumes" }] }),
   component: NewArrivalsPage,
 });
 
@@ -67,7 +67,7 @@ function NewArrivalsPage() {
           </div>
           <h1 className="font-display text-5xl font-semibold md:text-6xl">New Arrivals</h1>
           <p className="mt-4 mx-auto max-w-lg text-muted-foreground">
-            The latest additions to the Maison Aria collection — freshly curated and ready to discover.
+            The latest additions to the JD09 Perfumes collection — freshly curated and ready to discover.
           </p>
         </div>
       </div>

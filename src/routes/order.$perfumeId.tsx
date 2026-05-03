@@ -15,7 +15,7 @@ import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
-const WHATSAPP_NUMBER = "971569270365";
+const WHATSAPP_NUMBER = "971555819416";
 
 type Perfume = {
   id: string; name: string; brand: string | null; description: string | null;
@@ -38,8 +38,8 @@ const DEFAULT_NOTES = { top: "Bergamot · Cardamom · Pink Pepper", heart: "Rose
 export const Route = createFileRoute("/order/$perfumeId")({
   head: () => ({
     meta: [
-      { title: "Product — Maison Aria" },
-      { name: "description", content: "Order your selected fragrance from Maison Aria." },
+      { title: "Product — JD09 Perfumes" },
+      { name: "description", content: "Order your selected fragrance from JD09 Perfumes." },
     ],
   }),
   component: ProductPage,
@@ -119,7 +119,7 @@ function ProductPage() {
   function handleBuyNow() {
     if (!perfume) return;
     const msg = encodeURIComponent(
-      `Hello! 👋 I'd like to enquire about *${perfume.name}* from Maison Aria.\n\n` +
+      `Hello! 👋 I'd like to enquire about *${perfume.name}* from JD09 Perfumes.\n\n` +
       `💰 Price: AED ${Number(perfume.price).toFixed(2)}\n` +
       `🔢 Quantity: ${qty}\n` +
       `💵 Estimated Total: AED ${(Number(perfume.price) * qty).toFixed(2)}\n\n` +
@@ -365,7 +365,7 @@ function ProductPage() {
               <p className="text-xs uppercase tracking-widest text-primary-foreground/60 mb-3">Complete the ritual</p>
               <h2 className="font-display text-3xl font-semibold text-primary-foreground">Gift wrapping available</h2>
               <p className="mt-3 text-primary-foreground/70 leading-relaxed">
-                Every Maison Aria order ships in our signature matte black box, sealed with a wax stamp.
+                Every JD09 Perfumes order ships in our signature matte black box, sealed with a wax stamp.
                 Add a personalised message at checkout via WhatsApp.
               </p>
               <Button onClick={handleBuyNow} className="mt-7 w-fit h-11 rounded-full px-7 gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white border-0">

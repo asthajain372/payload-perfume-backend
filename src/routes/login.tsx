@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
-import { Sparkles, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -51,12 +51,10 @@ function LoginPage() {
 
         <div className="rounded-2xl border border-border bg-card p-8" style={{ boxShadow: "var(--shadow-elegant)" }}>
           {/* logo */}
-          <div className="mb-8 flex flex-col items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full" style={{ background: "var(--gradient-gold)" }}>
-              <Sparkles className="h-5 w-5 text-primary" />
-            </div>
-            <div className="text-center">
-              <p className="font-display text-xl font-semibold">Maison Aria</p>
+          <div className="mb-8 flex flex-col items-center gap-1">
+            <img src="/logo.jpeg" alt="JD09 Perfumes" className="h-24 w-24 object-contain" style={{ mixBlendMode: "multiply" }} draggable={false} />
+            <div className="text-center -mt-1">
+              <p className="font-display text-xl font-semibold">JD09 Perfumes</p>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mt-0.5">Admin Portal</p>
             </div>
           </div>

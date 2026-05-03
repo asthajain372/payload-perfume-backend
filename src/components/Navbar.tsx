@@ -4,7 +4,7 @@ import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useAuth } from "@/lib/auth";
 import { PromoBar } from "@/components/PromoBar";
-import { Sparkles, ShoppingCart, Heart, Menu, X, Search, User } from "lucide-react";
+import { ShoppingCart, Heart, Menu, X, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -30,11 +30,18 @@ export function Navbar() {
 
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 gap-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: "var(--gradient-gold)" }}>
-            <Sparkles className="h-4 w-4 text-primary" />
+        <Link to="/" className="flex items-center gap-1 shrink-0">
+          <img
+            src="/logo.jpeg"
+            alt="JD09 Perfumes"
+            className="h-14 w-14 shrink-0 object-contain"
+            style={{ mixBlendMode: "multiply" }}
+            draggable={false}
+          />
+          <div className="flex flex-col leading-none -ml-1">
+            <span className="font-display text-xl font-semibold tracking-tight">JD09 Perfumes</span>
+            <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-0.5">Premium Perfume</span>
           </div>
-          <span className="font-display text-xl font-semibold tracking-tight">Maison Aria</span>
         </Link>
 
         {/* Desktop nav */}

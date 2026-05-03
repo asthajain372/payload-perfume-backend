@@ -252,7 +252,7 @@ function ContactsPage() {
                     className="flex-1 rounded-xl gap-2"
                   >
                     <a
-                      href={`https://wa.me/?text=${encodeURIComponent(`Hi ${selected.name}, thank you for contacting Maison Aria!`)}`}
+                      href={`https://wa.me/?text=${encodeURIComponent(`Hi ${selected.name}, thank you for contacting JD09 Perfumes!`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

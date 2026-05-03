@@ -5,24 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Leaf, Flame, Wind, Star, Award, Heart, Globe } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({ meta: [{ title: "About — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "About — JD09 Perfumes" }] }),
   component: AboutPage,
 });
 
 const VALUES = [
-  { icon: Leaf, title: "Natural Sourcing", desc: "Every raw material is ethically sourced from growers we trust. We visit our suppliers in person — no shortcuts, no compromises." },
-  { icon: Flame, title: "Master Perfumers", desc: "Each formula is co-developed with certified perfumers trained in Grasse, the world capital of fine fragrance." },
-  { icon: Wind, title: "Longevity First", desc: "We reformulate until a fragrance performs on skin for at least 8 hours. Most of ours last 10–14." },
-  { icon: Star, title: "Small Batches", desc: "We cap each release at 500 bottles. Scarcity is not a marketing trick — it's how we maintain quality." },
-  { icon: Award, title: "Cruelty Free", desc: "100% cruelty-free. Never tested on animals, never will be. PETA certified since our first day." },
-  { icon: Globe, title: "Carbon Neutral", desc: "Every order offsets its shipping carbon. Our bottles are recycled glass. Boxes are FSC-certified paper." },
+  { icon: Leaf, title: "Authentic Fragrances", desc: "We source directly from trusted suppliers — Arabian ouds, French florals, and international niche lines — all hand-picked for quality." },
+  { icon: Flame, title: "Arabian Heritage", desc: "Rooted in the rich perfumery culture of the UAE, we celebrate the art of oud, bakhoor, and classic Eastern blends." },
+  { icon: Wind, title: "Long-Lasting Scents", desc: "Every fragrance we stock is chosen for its performance on skin. If it doesn't last, it doesn't make our shelves." },
+  { icon: Star, title: "Personal Service", desc: "We take time to understand what you're looking for — whether it's your first perfume or your hundredth." },
+  { icon: Award, title: "Premium Quality", desc: "From niche international houses to beloved Arabian classics, every bottle meets our quality standard before it reaches you." },
+  { icon: Globe, title: "Global & Local", desc: "We bring the world's finest fragrances to the heart of Dubai, alongside the best of regional Arabian perfumery." },
 ];
 
 const TIMELINE = [
-  { year: "2019", title: "The Idea", desc: "Founder Aria Rousseau, tired of synthetic celebrity fragrances, travels to Grasse and falls in love with real perfumery." },
-  { year: "2020", title: "First Formula", desc: "After 18 months of development, Rose Éternelle is created — still our bestselling scent." },
-  { year: "2022", title: "First 100 Orders", desc: "Launched with three fragrances. Sold out in 11 days entirely by word of mouth." },
-  { year: "2024", title: "Maison Aria", desc: "The full Maison launches with twelve compositions spanning six olfactory families." },
+  { year: "2009", title: "Founded in Dubai", desc: "JD09 Perfumes opened its first shop in Meena Bazar, Bur Dubai — the fragrance capital of the UAE." },
+  { year: "2013", title: "Growing Collection", desc: "Expanded to carry over 200 unique fragrances spanning Arabian, French, and niche international houses." },
+  { year: "2018", title: "Trusted by Thousands", desc: "Word of mouth made us a go-to destination for perfume lovers across the UAE and visiting tourists." },
+  { year: "2024", title: "Now Online", desc: "Bringing the JD09 Perfumes experience online — browse, order, and have your favourite scents delivered to your door." },
 ];
 
 function AboutPage() {
@@ -39,14 +39,14 @@ function AboutPage() {
             Our Story
           </div>
           <h1 className="font-display text-6xl font-semibold leading-tight md:text-7xl">
-            Born from a
+            Fragrance is
             <span className="block" style={{ backgroundImage: "var(--gradient-gold)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-              single belief.
+              our passion.
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            That a great perfume doesn't shout. It stays. It becomes part of how people remember you —
-            a quiet signature that outlasts the room.
+            Since 2009, JD09 Perfumes has been Dubai's trusted destination for premium Arabian
+            and international fragrances — right in the heart of Meena Bazar, Bur Dubai.
           </p>
         </div>
       </section>
@@ -55,10 +55,10 @@ function AboutPage() {
       <section className="border-y border-border/50 bg-card/30">
         <div className="mx-auto max-w-3xl px-6 py-16 text-center">
           <blockquote className="font-display text-2xl font-medium leading-relaxed md:text-3xl">
-            "We don't make fragrances for trends. We make them for memories — for the version of yourself
-            you want people to recall long after you've left the room."
+            "A great fragrance isn't just a scent — it's a feeling, a memory, a signature.
+            We're here to help you find yours."
           </blockquote>
-          <p className="mt-6 text-sm text-muted-foreground">— Aria Rousseau, Founder</p>
+          <p className="mt-6 text-sm text-muted-foreground">— JD09 Perfumes, Bur Dubai</p>
         </div>
       </section>
 
@@ -112,15 +112,15 @@ function AboutPage() {
       <section className="border-t border-border/50 bg-card/30 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-12 text-center">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Behind Every Bottle</p>
-            <h2 className="font-display text-4xl font-semibold">Our Process</h2>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">How It Works</p>
+            <h2 className="font-display text-4xl font-semibold">Your Journey with Us</h2>
           </div>
           <div className="grid gap-0 md:grid-cols-4">
             {[
-              { step: "01", title: "Sourcing", desc: "We visit farms and distilleries personally to select the finest raw materials." },
-              { step: "02", title: "Composing", desc: "Our perfumers craft each formula through dozens of revisions over 12–18 months." },
-              { step: "03", title: "Testing", desc: "Every batch is tested on 50+ volunteers for 30 days before approval." },
-              { step: "04", title: "Bottling", desc: "Hand-filled into recycled glass and sealed with our signature wax stamp." },
+              { step: "01", title: "Curate", desc: "We handpick every fragrance — testing dozens before adding one to our collection." },
+              { step: "02", title: "Advise", desc: "Our team helps you find a scent that matches your personality, occasion, and skin chemistry." },
+              { step: "03", title: "Order", desc: "Browse in-store in Bur Dubai or order online — we deliver across the UAE." },
+              { step: "04", title: "Enjoy", desc: "Your fragrance arrives carefully packed, ready to wear and share." },
             ].map(({ step, title, desc }, i) => (
               <div key={step} className="relative p-8 border-r border-border last:border-r-0">
                 <div className="font-display text-6xl font-semibold opacity-10 mb-4">{step}</div>
@@ -140,7 +140,7 @@ function AboutPage() {
           <Sparkles className="mx-auto mb-5 h-8 w-8 text-primary-foreground/60" />
           <h2 className="font-display text-4xl font-semibold text-primary-foreground">Discover your scent.</h2>
           <p className="mx-auto mt-4 max-w-md text-primary-foreground/70">
-            Explore the full Maison Aria collection and find the fragrance that becomes unmistakably yours.
+            Explore the full JD09 Perfumes collection and find the fragrance that becomes unmistakably yours.
           </p>
           <Button asChild size="lg" className="mt-8 h-12 px-10 rounded-full text-base" style={{ background: "var(--gradient-gold)", color: "var(--primary)" }}>
             <Link to="/collection">Shop the Collection</Link>

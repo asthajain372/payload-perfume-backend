@@ -3,9 +3,9 @@ import { X } from "lucide-react";
 
 const MESSAGES = [
   "✦  Free shipping on orders over AED 150",
-  "✦  Authentic luxury fragrances, sourced from Grasse",
-  "✦  WhatsApp support · +971 56 927 0365",
-  "✦  Gift wrapping included on every order",
+  "✦  Premium Arabian & international fragrances",
+  "✦  WhatsApp support · +971 55 581 9416",
+  "✦  Visit us in Meena Bazar, Bur Dubai",
 ];
 
 export function PromoBar() {

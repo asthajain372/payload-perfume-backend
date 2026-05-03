@@ -20,7 +20,7 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/collection")({
-  head: () => ({ meta: [{ title: "Collection — Maison Aria" }] }),
+  head: () => ({ meta: [{ title: "Collection — JD09 Perfumes" }] }),
   validateSearch: searchSchema,
   component: CollectionPage,
 });

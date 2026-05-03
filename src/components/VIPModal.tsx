@@ -118,7 +118,7 @@ export function VIPModal() {
                   You're in!
                 </h2>
                 <p className="text-primary-foreground/60 text-sm leading-relaxed">
-                  Welcome to the Maison Aria VIP list. Expect exclusive offers and early drops straight to your phone.
+                  Welcome to the JD09 Perfumes VIP list. Expect exclusive offers and early drops straight to your phone.
                 </p>
               </div>
             ) : (
@@ -198,7 +198,7 @@ export function VIPModal() {
                 </button>
 
                 <p className="mt-3 text-[10px] text-primary-foreground/25 leading-relaxed">
-                  By joining you agree to receive WhatsApp messages about offers and new arrivals from Maison Aria.
+                  By joining you agree to receive WhatsApp messages about offers and new arrivals from JD09 Perfumes.
                   You can opt out at any time by replying STOP.
                 </p>
               </>
