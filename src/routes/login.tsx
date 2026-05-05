@@ -50,10 +50,9 @@ function LoginPage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-8" style={{ boxShadow: "var(--shadow-elegant)" }}>
-          {/* logo */}
+          {/* brand */}
           <div className="mb-8 flex flex-col items-center gap-1">
-            <img src="/logo.jpeg" alt="JD09 Perfumes" className="h-24 w-24 object-contain" style={{ mixBlendMode: "multiply" }} draggable={false} />
-            <div className="text-center -mt-1">
+            <div className="text-center">
               <p className="font-display text-xl font-semibold">JD09 Perfumes</p>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mt-0.5">Admin Portal</p>
             </div>

@@ -59,8 +59,7 @@ function AuthPage() {
       {/* minimal header */}
       <header className="border-b border-border/50 px-6 py-4">
         <Link to="/" className="inline-flex items-center gap-1">
-          <img src="/logo.jpeg" alt="" className="h-12 w-12 object-contain shrink-0" style={{ mixBlendMode: "multiply" }} draggable={false} />
-          <span className="font-display text-xl font-semibold -ml-1">JD09 Perfumes</span>
+          <span className="font-display text-xl font-semibold">JD09 Perfumes</span>
         </Link>
       </header>
 

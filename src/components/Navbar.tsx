@@ -31,14 +31,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-1 shrink-0">
-          <img
-            src="/logo.jpeg"
-            alt="JD09 Perfumes"
-            className="h-14 w-14 shrink-0 object-contain"
-            style={{ mixBlendMode: "multiply" }}
-            draggable={false}
-          />
-          <div className="flex flex-col leading-none -ml-1">
+          <div className="flex flex-col leading-none">
             <span className="font-display text-xl font-semibold tracking-tight">JD09 Perfumes</span>
             <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-0.5">Premium Perfume</span>
           </div>

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, Mail, MessageCircle, Heart, MapPin } from "lucide-react";
-import { JD09LogoMark } from "@/components/JD09Logo";
 
 const EXPLORE = [
   { to: "/collection",   label: "Collection" },
@@ -24,7 +23,6 @@ export function Footer() {
           {/* Brand */}
           <div className="max-w-xs">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <JD09LogoMark className="h-12 w-auto shrink-0 text-primary-foreground/90" />
               <div className="flex flex-col leading-none">
                 <span className="font-display text-xl font-semibold text-primary-foreground">JD09 Perfumes</span>
                 <span className="text-[9px] uppercase tracking-[0.2em] text-primary-foreground/50 mt-0.5">Premium Perfume</span>

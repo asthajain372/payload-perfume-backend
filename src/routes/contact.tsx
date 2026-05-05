@@ -51,7 +51,6 @@ function ContactPage() {
       {/* minimal header */}
       <header className="border-b border-border/50 px-6 py-4">
         <Link to="/" className="inline-flex items-center gap-2.5">
-          <img src="/logo.jpeg" alt="JD09 Perfumes" className="h-12 w-12 object-contain" style={{ mixBlendMode: "multiply" }} draggable={false} />
           <span className="font-display text-xl font-semibold">JD09 Perfumes</span>
         </Link>
       </header>
